@@ -3,9 +3,25 @@ set -euo pipefail
 
 cd "${HERMES_HOME:-/data/hermes}"
 
-PROFILE_FILE="${HOME:-/data/hermes}/.bash_profile"
-mkdir -p "$(dirname "${PROFILE_FILE}")"
-touch "${PROFILE_FILE}"
+PROFILE_HOME="${HOME:-/data/hermes}"
+mkdir -p "${PROFILE_HOME}"
+
+if [[ -f "${PROFILE_HOME}/.bash_profile" ]]; then
+    PROFILE_FILE="${PROFILE_HOME}/.bash_profile"
+elif [[ -f "${PROFILE_HOME}/.bash_login" ]]; then
+    PROFILE_FILE="${PROFILE_HOME}/.bash_login"
+elif [[ -f "${PROFILE_HOME}/.profile" ]]; then
+    PROFILE_FILE="${PROFILE_HOME}/.profile"
+else
+    PROFILE_FILE="${PROFILE_HOME}/.bash_profile"
+    touch "${PROFILE_FILE}"
+    cat >>"${PROFILE_FILE}" <<'PROFILE'
+# HERMES_AGENT_ADDON_PROFILE
+if [ -f "${HOME}/.profile" ]; then
+    . "${HOME}/.profile"
+fi
+PROFILE
+fi
 
 if ! grep -q "HERMES_AGENT_ADDON_PATH" "${PROFILE_FILE}"; then
     cat >>"${PROFILE_FILE}" <<'PROFILE'
