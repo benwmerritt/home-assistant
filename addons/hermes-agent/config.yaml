@@ -1,5 +1,5 @@
 name: Hermes Agent
-version: "0.1.0"
+version: "0.1.1"
 slug: hermes_agent
 description: Hermes Agent running inside Home Assistant with browser terminal access
 url: https://github.com/wallajl/home-assistant/tree/main/addons/hermes-agent
@@ -21,7 +21,7 @@ map:
 options:
   start_gateway: false
   gateway_allow_all_users: false
-  hass_url: http://homeassistant.local:8123
+  hass_url: http://homeassistant:8123
   hass_token: ""
   telegram_bot_token: ""
   telegram_allowed_users: ""

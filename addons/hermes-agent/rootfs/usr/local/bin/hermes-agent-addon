@@ -14,7 +14,7 @@ export HOME="${DATA_DIR}"
 export HERMES_HOME="${DATA_DIR}"
 export HERMES_WRITE_SAFE_ROOT="${DATA_DIR}"
 export HERMES_LAZY_INSTALL_TARGET="${DATA_DIR}/lazy-packages"
-export PATH="${DATA_DIR}/.local/bin:${PATH}"
+HERMES_PATH="${DATA_DIR}/.local/bin:${PATH}"
 
 read_option() {
     local key="$1"
@@ -84,11 +84,11 @@ cleanup() {
 trap cleanup EXIT INT TERM
 
 if [[ "${START_GATEWAY}" == "true" ]]; then
-    "${S6_SETUIDGID}" hermes hermes gateway run --no-supervise --accept-hooks &
+    "${S6_SETUIDGID}" hermes env PATH="${HERMES_PATH}" hermes gateway run --no-supervise --accept-hooks &
     GATEWAY_PID=$!
 fi
 
-"${S6_SETUIDGID}" hermes ttyd \
+"${S6_SETUIDGID}" hermes env PATH="${HERMES_PATH}" ttyd \
     --writable \
     --port "${TERMINAL_PORT}" \
     --interface 0.0.0.0 \
