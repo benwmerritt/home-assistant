@@ -59,9 +59,9 @@ path.write_text("\n".join(lines) + "\n")
 PY
 }
 
-START_GATEWAY="$(read_option start_gateway true)"
+START_GATEWAY="$(read_option start_gateway false)"
 GATEWAY_ALLOW_ALL_USERS="$(read_option gateway_allow_all_users false)"
-HASS_URL="$(read_option hass_url 'http://homeassistant.local:8123')"
+HASS_URL="$(read_option hass_url 'http://homeassistant:8123')"
 HASS_TOKEN="$(read_option hass_token '')"
 TELEGRAM_BOT_TOKEN="$(read_option telegram_bot_token '')"
 TELEGRAM_ALLOWED_USERS="$(read_option telegram_allowed_users '')"
