@@ -3,6 +3,21 @@ set -euo pipefail
 
 cd "${HERMES_HOME:-/data/hermes}"
 
+PROFILE_FILE="${HOME:-/data/hermes}/.bash_profile"
+mkdir -p "$(dirname "${PROFILE_FILE}")"
+touch "${PROFILE_FILE}"
+
+if ! grep -q "HERMES_AGENT_ADDON_PATH" "${PROFILE_FILE}"; then
+    cat >>"${PROFILE_FILE}" <<'PROFILE'
+
+# HERMES_AGENT_ADDON_PATH
+case ":${PATH}:" in
+    *":${HOME}/.local/bin:"*) ;;
+    *) export PATH="${PATH}:${HOME}/.local/bin" ;;
+esac
+PROFILE
+fi
+
 cat <<'TEXT'
 Hermes Agent add-on terminal
 

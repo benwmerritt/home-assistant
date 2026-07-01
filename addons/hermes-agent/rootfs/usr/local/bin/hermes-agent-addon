@@ -14,7 +14,9 @@ export HOME="${DATA_DIR}"
 export HERMES_HOME="${DATA_DIR}"
 export HERMES_WRITE_SAFE_ROOT="${DATA_DIR}"
 export HERMES_LAZY_INSTALL_TARGET="${DATA_DIR}/lazy-packages"
-HERMES_PATH="${DATA_DIR}/.local/bin:${PATH}"
+HERMES_PATH="${PATH}:${DATA_DIR}/.local/bin"
+HERMES_BIN="$(command -v hermes)"
+TTYD_BIN=/usr/local/bin/ttyd
 
 read_option() {
     local key="$1"
@@ -66,6 +68,10 @@ HASS_TOKEN="$(read_option hass_token '')"
 TELEGRAM_BOT_TOKEN="$(read_option telegram_bot_token '')"
 TELEGRAM_ALLOWED_USERS="$(read_option telegram_allowed_users '')"
 
+if [[ "${HASS_URL}" == "http://homeassistant.local:8123" ]]; then
+    HASS_URL="http://homeassistant:8123"
+fi
+
 set_env_value HASS_URL "${HASS_URL}"
 set_env_value HASS_TOKEN "${HASS_TOKEN}"
 set_env_value TELEGRAM_BOT_TOKEN "${TELEGRAM_BOT_TOKEN}"
@@ -84,11 +90,11 @@ cleanup() {
 trap cleanup EXIT INT TERM
 
 if [[ "${START_GATEWAY}" == "true" ]]; then
-    "${S6_SETUIDGID}" hermes env PATH="${HERMES_PATH}" hermes gateway run --no-supervise --accept-hooks &
+    "${S6_SETUIDGID}" hermes env PATH="${HERMES_PATH}" "${HERMES_BIN}" gateway run --no-supervise --accept-hooks &
     GATEWAY_PID=$!
 fi
 
-"${S6_SETUIDGID}" hermes env PATH="${HERMES_PATH}" ttyd \
+"${S6_SETUIDGID}" hermes env PATH="${HERMES_PATH}" "${TTYD_BIN}" \
     --writable \
     --port "${TERMINAL_PORT}" \
     --interface 0.0.0.0 \
